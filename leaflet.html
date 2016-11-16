@@ -1,0 +1,29 @@
+<html>
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet-src.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css"/>
+  <style>
+    body { margin: 0; padding: 0; }
+    #map { height: 100%; width: 100%; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <script>
+    var map = L.map('map', {
+      maxZoom: 20,
+      minZoom: 20,
+      crs: L.CRS.Simple
+    }).setView([0, 0], 20);
+
+    var southWest = map.unproject([0, 8337], map.getMaxZoom());
+    var northEast = map.unproject([8408, 0], map.getMaxZoom());
+    map.setMaxBounds(new L.LatLngBounds(southWest, northEast));
+  
+    L.tileLayer('http://localhost:8000/map_{x}_{y}.png', {
+      minZoom: 20,
+      maxZoom: 20 
+    }).addTo(map);
+  </script>
+</body>
+</html>
