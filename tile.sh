@@ -10,6 +10,7 @@ maxZoom=$5
 tileSize=256
 
 levels=$(( $maxZoom - $minZoom ))
+echo $levels
 for zoom in $(seq 0 $levels); do
   currentZoom=$(( $maxZoom - $zoom ))
   echo "Creating map for zoom level $currentZoom..."
@@ -23,6 +24,16 @@ for zoom in $(seq 0 $levels); do
   scaleCmd="convert ../${inputFile} -scale ${bcScale}% ${scaledOutput}.jpg"
   echo "Resizing image for this zoom level.."
   eval $scaleCmd
+  echo $bcScale
+
+  scaledWidth=$(printf "%.0f" $(eval "bc  <<< 'scale=2; ($bcScale / 100) * $width'"))
+  scaledHeight=$(printf "%.0f" $(eval "bc <<< 'scale=2; ($bcScale / 100) * $height'"))
+
+  echo "-----"
+  echo $scaledWidth
+  echo $scaledHeight
+  echo "-----"
+
   convertCmd="convert ${scaledOutput}.jpg -crop ${tileSize}x${tileSize}! -gravity NorthWest -extent ${tileSize}x${tileSize} -transparent white tiles_%d.png"
   echo "Creating tiles..."
   eval $convertCmd
@@ -32,7 +43,7 @@ for zoom in $(seq 0 $levels); do
   do
     if [[ $f =~ $tileRegex ]]; then
       index="${BASH_REMATCH[1]}"
-      tileWidth=$(echo "$width $tileSize" | awk '{print int( ($1/$2) + 1 )}')
+      tileWidth=$(echo "$scaledWidth $tileSize" | awk '{print int( ($1/$2) + 1 )}')
       x=$(( $index % $tileWidth ))
       y=$(( $index / $tileWidth ))
       mvCmd="mv $f map_${x}_${y}.png"

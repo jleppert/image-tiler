@@ -12,17 +12,22 @@
   <script>
     var map = L.map('map', {
       maxZoom: 20,
-      minZoom: 20,
+      minZoom: 18,
       crs: L.CRS.Simple
     }).setView([0, 0], 20);
 
     var southWest = map.unproject([0, 8337], map.getMaxZoom());
     var northEast = map.unproject([8408, 0], map.getMaxZoom());
-    map.setMaxBounds(new L.LatLngBounds(southWest, northEast));
+    var bounds = new L.LatLngBounds(southWest, northEast);
+    map.setMaxBounds(bounds);
   
-    L.tileLayer('http://localhost:8000/map_{x}_{y}.png', {
-      minZoom: 20,
-      maxZoom: 20 
+    L.tileLayer('/{z}/map_{x}_{y}.png', {
+      minZoom: 18,
+      maxZoom: 20,
+      maxNativeZoom: 20,
+      continuousWorld: true,
+      noWrap: true,
+      bounds: bounds
     }).addTo(map);
   </script>
 </body>
