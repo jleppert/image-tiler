@@ -12,7 +12,6 @@ maxZoom=$5
 tileSize=$6
 
 levels=$(( $maxZoom - $minZoom ))
-echo $levels
 for zoom in $(seq 0 $levels); do
   currentZoom=$(( $maxZoom - $zoom ))
   echo "Creating map for zoom level $currentZoom..."
